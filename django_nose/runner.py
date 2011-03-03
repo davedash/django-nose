@@ -86,6 +86,16 @@ class NoseTestSuiteRunner(DjangoTestSuiteRunner):
         # suite_result expects the suite as the first argument.  Fake it.
         return self.suite_result({}, result)
 
+    def setup_test_environment(self, **kwargs):
+        super(NoseTestSuiteRunner, self).setup_test_environment(**kwargs)
+
+        # If we have a settings_test.py let's roll it into our settings.
+        try:
+            import settings_test
+            settings.__dict__.update(settings_test.__dict__)
+        except ImportError:
+            pass
+
 
 def _get_options():
     """Return all nose options that don't conflict with django options."""
